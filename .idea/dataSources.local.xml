@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="stu@10.2.130.93" uuid="014508c2-9f29-47b8-8666-0d8dd43fe508">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <introspection-schemas>stu:dbo</introspection-schemas>
+    </data-source>
+  </component>
+</project>

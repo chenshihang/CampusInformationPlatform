@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wing.dao.ArticleDao">
+  <resultMap id="BaseResultMap" type="org.wing.entity.Article">
+    <constructor>
+      <idArg column="ArticleId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="User" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Title" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="PublishDate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="SchoolYear" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="College" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="Category" javaType="java.lang.String" jdbcType="NVARCHAR" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.wing.entity.Article">
+    <constructor>
+      <idArg column="ArticleId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="User" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="Title" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="PublishDate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="SchoolYear" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="College" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="Category" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="Contents" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    ArticleId, [User], Title, PublishDate, SchoolYear, College, Category
+  </sql>
+  <sql id="Blob_Column_List">
+    Contents
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ArticleInfo
+    where ArticleId = #{articleid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ArticleInfo
+    where ArticleId = #{articleid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.wing.entity.Article">
+    insert into ArticleInfo (ArticleId, [User], Title,
+      PublishDate, SchoolYear, College, 
+      Category, Contents)
+    values (#{articleid,jdbcType=INTEGER}, #{user,jdbcType=VARCHAR}, #{title,jdbcType=NVARCHAR}, 
+      #{publishdate,jdbcType=TIMESTAMP}, #{schoolyear,jdbcType=NVARCHAR}, #{college,jdbcType=NVARCHAR},
+      #{category,jdbcType=NVARCHAR}, #{contents,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.wing.entity.Article">
+    insert into ArticleInfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="articleid != null">
+        ArticleId,
+      </if>
+      <if test="user != null">
+        [User],
+      </if>
+      <if test="title != null">
+        Title,
+      </if>
+      <if test="publishdate != null">
+        PublishDate,
+      </if>
+      <if test="schoolyear != null">
+        SchoolYear,
+      </if>
+      <if test="college != null">
+        College,
+      </if>
+      <if test="category != null">
+        Category,
+      </if>
+      <if test="contents != null">
+        Contents,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="articleid != null">
+        #{articleid,jdbcType=INTEGER},
+      </if>
+      <if test="user != null">
+        #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=NVARCHAR},
+      </if>
+      <if test="publishdate != null">
+        #{publishdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="schoolyear != null">
+        #{schoolyear,jdbcType=NVARCHAR},
+      </if>
+      <if test="college != null">
+        #{college,jdbcType=NVARCHAR},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=NVARCHAR},
+      </if>
+      <if test="contents != null">
+        #{contents,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.wing.entity.Article">
+    update ArticleInfo
+    <set>
+      <if test="user != null">
+        [User] = #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        Title = #{title,jdbcType=NVARCHAR},
+      </if>
+      <if test="publishdate != null">
+        PublishDate = #{publishdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="schoolyear != null">
+        SchoolYear = #{schoolyear,jdbcType=NVARCHAR},
+      </if>
+      <if test="college != null">
+        College = #{college,jdbcType=NVARCHAR},
+      </if>
+      <if test="category != null">
+        Category = #{category,jdbcType=NVARCHAR},
+      </if>
+      <if test="contents != null">
+        Contents = #{contents,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ArticleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.wing.entity.Article">
+    update ArticleInfo
+    set [User] = #{user,jdbcType=VARCHAR},
+      Title = #{title,jdbcType=NVARCHAR},
+      PublishDate = #{publishdate,jdbcType=TIMESTAMP},
+      SchoolYear = #{schoolyear,jdbcType=NVARCHAR},
+      College = #{college,jdbcType=NVARCHAR},
+      Category = #{category,jdbcType=NVARCHAR},
+      Contents = #{contents,jdbcType=VARCHAR}
+    where ArticleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.wing.entity.Article">
+    update ArticleInfo
+    set [User] = #{user,jdbcType=VARCHAR},
+      Title = #{title,jdbcType=NVARCHAR},
+      PublishDate = #{publishdate,jdbcType=TIMESTAMP},
+      SchoolYear = #{schoolyear,jdbcType=NVARCHAR},
+      College = #{college,jdbcType=NVARCHAR},
+      Category = #{category,jdbcType=NVARCHAR}
+    where ArticleId = #{articleid,jdbcType=INTEGER}
+  </update>
+
+  <select id="getRecentArticles" resultMap="BaseResultMap" >
+    SELECT
+
+    ArticleId, [User], Title, PublishDate, SchoolYear, College, Category
+
+    from ArticleInfo order by PublishDate DESC
+  </select>
+</mapper>
