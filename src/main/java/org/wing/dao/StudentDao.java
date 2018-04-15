@@ -38,4 +38,11 @@ public interface StudentDao {
      */
     void updateStudent(Student student);
 
+    /**
+     * 根据学号判断student是否存在
+     * @param studentNumber
+     * @return
+     */
+    int studentIsExistInTable1(String studentNumber);
+
 }

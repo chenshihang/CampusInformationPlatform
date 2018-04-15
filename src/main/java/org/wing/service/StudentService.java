@@ -90,5 +90,35 @@ public interface StudentService {
      * @param request
      * @return
      */
-    Student getCurrentStudent(HttpServletRequest request);
+    StudentInfo getCurrentStudent(HttpServletRequest request);
+
+
+    /**
+     * 根据学号获取各个学期
+     * @param studentNumber
+     * @return
+     */
+    List<String> getTermsByStuNum(String studentNumber);
+
+    /**
+     * 根据学生学号和学期查询各科
+     * @param studentNumber
+     * @param term
+     * @return
+     */
+    List<Achievement> getGrades(String studentNumber,String term);
+
+    /**
+     * 根据学号判断学生是否存在
+     * @param studentNumber
+     * @return
+     */
+    boolean studentIsExistInTable1(String studentNumber);
+
+    /**
+     * 根据学号获取学生studentInfo信息
+     * @param studentNumber
+     * @return
+     */
+    StudentInfo getStudentInfo(String studentNumber);
 }

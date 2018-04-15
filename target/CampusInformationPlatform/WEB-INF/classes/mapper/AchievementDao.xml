@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.5//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.wing.dao.AchievementDao" >
+    <resultMap id="achievementResultMap" type="org.wing.entity.Achievement">
+        <result property="studentNumber" column="学号"/>
+        <result property="term" column="学期"/>
+        <result property="courseName" column="课程名"/>
+        <result property="achievement" column="成绩"/>
+        <result property="credit" column="学分"/>
+        <result property="valid" column="是否有效"/>
+        <result property="courseNature" column="课程性质"/>
+        <result property="source" column="成绩来源"/>
+    </resultMap>
+    <select id="getTermNumber" parameterType="string" resultMap="achievementResultMap">
+         select distinct 学期 from [dbo].[学生成绩] where 学号= #{studentNumber};
+    </select>
+    <select id="getAchievement" parameterType="map" resultMap="achievementResultMap">
+         select 课程,成绩,学分,有效,课程性质,成绩来源 from [dbo].[学生成绩] where 学号=#{studentNumber} and 学期=#{term};
+    </select>
+</mapper>
+
+
+
+

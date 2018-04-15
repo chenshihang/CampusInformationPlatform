@@ -15,6 +15,7 @@ import org.wing.service.StudentService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,12 @@ import java.util.List;
  */
 @Service
 public class StudentServiceImpl implements StudentService{
+
+    @Autowired
+    private AchievementDao achievementDao;
+
+    @Autowired
+    private StudentInfoDao studentInfoDao;
 
     @Autowired
     private StudentDao studentDao;
@@ -128,11 +135,49 @@ public class StudentServiceImpl implements StudentService{
         return article;
     }
 
-    public Student getCurrentStudent(HttpServletRequest request){
+    public StudentInfo getCurrentStudent(HttpServletRequest request){
         HttpSession session = request.getSession();
-        String stuNumber = (String) session.getAttribute(Common.SESSION_STUDENT_NUM);
-        System.out.println("getcurrentStudent 获得stuNumber="+stuNumber);
-        Student student = this.getStudentByStudentNumber(stuNumber);
-        return student;
+//        String stuNumber = (String) session.getAttribute(Common.SESSION_STUDENT_NUM);
+        StudentInfo studentInfo = (StudentInfo)session.getAttribute(Common.CURRENT_STUDENT);
+
+//        System.out.println("getcurrentStudent 获得stuNumber="+stuNumber);
+//        Student student = this.getStudentByStudentNumber(stuNumber);
+        return studentInfo;
     }
+
+    public List<String> getTermsByStuNum(String studentNumber){
+        List<Achievement>  achievements = achievementDao.getTermNumber(studentNumber);
+        System.out.println("查询到学生学期信息，共有"+achievements.size()+"ge xue qi");
+        List<String> result = new ArrayList<>();
+        for(Achievement achievement: achievements){
+            System.out.println(achievement.getTerm());
+            result.add(achievement.getTerm());
+        }
+        return result;
+    }
+
+    public List<Achievement> getGrades(String studentNumber,String term){
+
+        System.out.println("service 查看学号为"+studentNumber+" term="+term);
+        List<Achievement> result = achievementDao.getAchievement(studentNumber,term);
+        for(Achievement achievement: result){
+            System.out.println(achievement.getCredit());
+        }
+        return result;
+    }
+
+    public boolean studentIsExistInTable1(String studentNumber){
+
+        int count =  studentDao.studentIsExistInTable1(studentNumber);
+        if(count==0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    public StudentInfo getStudentInfo(String studentNumber) {
+        return studentInfoDao.getStudentInfo(studentNumber);
+    }
+
 }

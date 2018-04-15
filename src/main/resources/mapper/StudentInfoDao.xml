@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wing.dao.StudentInfoDao">
+  <resultMap id="BaseResultMap" type="org.wing.entity.StudentInfo">
+    <constructor>
+      <arg column="ID" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="学号" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="姓名" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="性别" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="学院" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="年级" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="专业" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="班级" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="在读情况" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="校区" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="身份证号码" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="培养层次" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="民族" javaType="java.lang.String" jdbcType="NVARCHAR" />
+    </constructor>
+  </resultMap>
+  <insert id="insert" parameterType="org.wing.entity.StudentInfo">
+    insert into xslist (ID, 学号, 姓名, 
+      性别, 学院, 年级, 
+      专业, 班级, 在读情况, 
+      校区, 身份证号码, 培养层次, 
+      民族)
+    values (#{id,jdbcType=INTEGER}, #{studentNumber,jdbcType=NVARCHAR}, #{name,jdbcType=NVARCHAR}, 
+      #{sex,jdbcType=NVARCHAR}, #{institute,jdbcType=NVARCHAR}, #{grade,jdbcType=NVARCHAR}, 
+      #{professional,jdbcType=NVARCHAR}, #{team,jdbcType=NVARCHAR}, #{status,jdbcType=NVARCHAR}, 
+      #{campus,jdbcType=NVARCHAR}, #{identityId,jdbcType=NVARCHAR}, #{educationLevel,jdbcType=NVARCHAR}, 
+      #{nation,jdbcType=NVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.wing.entity.StudentInfo">
+    insert into xslist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="studentNumber != null">
+        学号,
+      </if>
+      <if test="name != null">
+        姓名,
+      </if>
+      <if test="sex != null">
+        性别,
+      </if>
+      <if test="institute != null">
+        学院,
+      </if>
+      <if test="grade != null">
+        年级,
+      </if>
+      <if test="professional != null">
+        专业,
+      </if>
+      <if test="team != null">
+        班级,
+      </if>
+      <if test="status != null">
+        在读情况,
+      </if>
+      <if test="campus != null">
+        校区,
+      </if>
+      <if test="identityId != null">
+        身份证号码,
+      </if>
+      <if test="educationLevel != null">
+        培养层次,
+      </if>
+      <if test="nation != null">
+        民族,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="studentNumber != null">
+        #{studentNumber,jdbcType=NVARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=NVARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=NVARCHAR},
+      </if>
+      <if test="institute != null">
+        #{institute,jdbcType=NVARCHAR},
+      </if>
+      <if test="grade != null">
+        #{grade,jdbcType=NVARCHAR},
+      </if>
+      <if test="professional != null">
+        #{professional,jdbcType=NVARCHAR},
+      </if>
+      <if test="team != null">
+        #{team,jdbcType=NVARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=NVARCHAR},
+      </if>
+      <if test="campus != null">
+        #{campus,jdbcType=NVARCHAR},
+      </if>
+      <if test="identityId != null">
+        #{identityId,jdbcType=NVARCHAR},
+      </if>
+      <if test="educationLevel != null">
+        #{educationLevel,jdbcType=NVARCHAR},
+      </if>
+      <if test="nation != null">
+        #{nation,jdbcType=NVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getStudentInfo" resultMap="BaseResultMap" parameterType="String">
+    SELECT * FROM xslist WHERE 学号=#{studentNumber}
+  </select>
+</mapper>

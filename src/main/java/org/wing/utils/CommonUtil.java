@@ -25,4 +25,17 @@ public class CommonUtil {
         articlevo.setUser(article.getUser());
         return articlevo;
     }
+
+    /**
+     * 从身份证号中获取默认密码
+     * @param identityId
+     * @return
+     */
+    public static String identityIdToPassword (String identityId){
+
+        //取身份证号后八位的前6位
+        String password = identityId.substring(10,16);
+        return password;
+    }
+
 }

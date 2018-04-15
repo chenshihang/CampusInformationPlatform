@@ -5,8 +5,7 @@ package org.wing.controller;
  */
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -49,21 +48,48 @@ public class StudentController {
      */
     @RequestMapping(value = "/login")
     @ResponseBody
-    public ResultMap login(Student student){
-        student.setStudentNumber("20158531");
-        student.setPassword("123456");
-        //TODO 判断自己建的表中有没有该学生，如果有，验证密码是否相等。如果没有，判断教务网表中有没有该学生。
+    public ResultMap login(HttpServletRequest request,Student student){
 
+        String studentNumber = student.getStudentNumber();
+        String password = student.getPassword();
+        System.out.println("studentNumber="+studentNumber+",password="+password);
+        if(studentService.studentIsExistInTable1(studentNumber)){
+            String passwordMd5 = CryptographyUtil.md5(password);
+            Student student1 = studentService.getStudentByStudentNumber(studentNumber);
+            if(student1.getPassword().equals(passwordMd5)){
 
-
-        Subject subject = SecurityUtils.getSubject();
-        if(true){
-            subject.getSession().setAttribute(Common.CURRENT_STUDENT,student);
-            subject.getSession().setAttribute(Common.SESSION_STUDENT_NUM,student.getStudentNumber());
-            return ResultMap.createBySuccess("登录成功");
+            }else {
+                return ResultMap.createByErrorMessage("密码错误");
+            }
         }else {
-            return ResultMap.createByErrorMessage("登录失败");
+            StudentInfo studentInfo = studentService.getStudentInfo(studentNumber);
+            if(studentInfo == null){
+                return ResultMap.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"学号错误，未能获取学生信息");
+            }else {
+                String identityId = studentInfo.getIdentityId();
+                String idTopassword = CommonUtil.identityIdToPassword(identityId);
+                if(password.equals(idTopassword)){
+
+                }else {
+                    return ResultMap.createByErrorMessage("密码错误");
+                }
+            }
         }
+
+        StudentInfo studentInfo = studentService.getStudentInfo(studentNumber);
+        request.getSession().setAttribute(Common.SESSION_STUDENT_NUM,studentNumber);
+        request.getSession().setAttribute(Common.CURRENT_STUDENT,studentInfo);
+        return ResultMap.createBySuccessMessage("登录成功");
+//        student.setStudentNumber("20158531");
+//        student.setPassword("123456");
+//        Subject subject = SecurityUtils.getSubject();
+//        if(true){
+//            subject.getSession().setAttribute(Common.CURRENT_STUDENT,student);
+//            subject.getSession().setAttribute(Common.SESSION_STUDENT_NUM,student.getStudentNumber());
+//            return ResultMap.createBySuccess("登录成功");
+//        }else {
+//            return ResultMap.createByErrorMessage("登录失败");
+//        }
 
 //        UsernamePasswordToken token = new UsernamePasswordToken(student.getStudentNumber(),
 //                CryptographyUtil.md5(student.getPassword()));
@@ -99,7 +125,7 @@ public class StudentController {
     @ResponseBody
     public ResultMap<List<Examination>> examSchedule(HttpServletRequest request){
 
-        Student currentStu = studentService.getCurrentStudent(request);
+        StudentInfo currentStu = studentService.getCurrentStudent(request);
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
@@ -135,7 +161,7 @@ public class StudentController {
     @RequestMapping(value = "/queryClass")
     @ResponseBody
     public ResultMap<List<ClassQuery>> queryClass(HttpServletRequest request,@RequestParam(value = "term",defaultValue = "false")String term){
-        Student currentStu = studentService.getCurrentStudent(request);
+        StudentInfo currentStu = studentService.getCurrentStudent(request);
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
@@ -177,7 +203,7 @@ public class StudentController {
     @RequestMapping("/queryComputerGradeTwo")
     @ResponseBody
     public ResultMap<List<ComputerGradeTwo>> queryComputerGradeTwo(HttpServletRequest request){
-        Student currentStu = studentService.getCurrentStudent(request);
+        StudentInfo currentStu = studentService.getCurrentStudent(request);
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
@@ -212,9 +238,9 @@ public class StudentController {
      */
     @RequestMapping("/getArticles")
     @ResponseBody
-    public ResultMap<List<Article>> getArticles(HttpServletRequest request){
+    public ResultMap<List<Articlevo>> getArticles(HttpServletRequest request){
         //认证是否登录
-        Student currentStu = studentService.getCurrentStudent(request);
+        StudentInfo currentStu = studentService.getCurrentStudent(request);
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
@@ -229,7 +255,7 @@ public class StudentController {
             return ResultMap.createByErrorMessage("未获取到公告信息");
 //            resultMap.put("msg","未获取到公告信息");
         }else {
-            return ResultMap.createBySuccess(articles);
+            return ResultMap.createBySuccess(articlevos);
 //            resultMap.put("articles",articlevos);
         }
 //        return resultMap;
@@ -237,8 +263,8 @@ public class StudentController {
 
     @RequestMapping(value = "/getArticle/{id}")
     @ResponseBody
-    public ResultMap<Article> getArticleById(HttpServletRequest request, @PathVariable("id") Integer id){
-        Student currentStu = this.studentService.getCurrentStudent(request);
+    public ResultMap<Articlevo> getArticleById(HttpServletRequest request, @PathVariable("id") Integer id){
+        StudentInfo currentStu = this.studentService.getCurrentStudent(request);
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请登陆");
         }
@@ -246,8 +272,50 @@ public class StudentController {
         if(article == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.ERROR.getCode(),"为通过id获取到公告信息");
         }else {
+            Articlevo articlevo = CommonUtil.articleToVo(article);
 
-            return ResultMap.createBySuccess(article);
+            return ResultMap.createBySuccess(articlevo);
+        }
+    }
+
+    /**
+     * 查询学生有哪些学期
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getTerms")
+    @ResponseBody
+    public ResultMap<List<String>> getTerms(HttpServletRequest request){
+        StudentInfo currentStu = this.studentService.getCurrentStudent(request);
+        if(currentStu == null){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请登陆");
+        }
+
+        List<String> terms = studentService.getTermsByStuNum(currentStu.getStudentNumber());
+        return ResultMap.createBySuccess(terms);
+    }
+
+    /**
+     * 查询学生的成绩
+     * @param request
+     * @param term
+     * @return
+     */
+    @RequestMapping("/getGrades")
+    @ResponseBody
+    public ResultMap<List<Achievement>> getGrades(HttpServletRequest request,@RequestParam(value = "term") String term){
+        StudentInfo currentStu = this.studentService.getCurrentStudent(request);
+        if(currentStu == null){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请登陆");
+        }
+        if(term == null || term.length()==0){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"学期参数错误");
+        }
+        List<Achievement> achievements = studentService.getGrades(currentStu.getStudentNumber(),term);
+        if(achievements.size() == 0){
+            return ResultMap.createByErrorMessage("未查询到成绩信息");
+        }else {
+            return ResultMap.createBySuccess(achievements);
         }
     }
 

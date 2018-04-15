@@ -11,7 +11,12 @@ import org.apache.shiro.crypto.hash.Md5Hash;
  */
 public class CryptographyUtil {
     public static String md5(String str){
+
         return new Md5Hash(str,"CampusInformationPlatform").toString();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(md5("123456"));
     }
 }
 
