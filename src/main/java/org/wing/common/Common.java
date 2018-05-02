@@ -7,4 +7,8 @@ public class Common {
 
     //session中存放的学号信息.
     public static final String SESSION_STUDENT_NUM ="session_student_num";
+
+    public static final int PAGE_SIZE=2;
+
+
 }

@@ -51,20 +51,22 @@
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
 
-        <table tableName="xslist" domainObjectName="StudentInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">
-            <columnOverride column="ID" property="id"> </columnOverride>
-            <columnOverride column="学号" property="studentNumber"></columnOverride>
-            <columnOverride column="姓名" property="name"></columnOverride>
-            <columnOverride column="性别" property="sex"></columnOverride>
-            <columnOverride column="学院" property="institute"> </columnOverride>
-            <columnOverride column="年级" property="grade"> </columnOverride>
-            <columnOverride column="专业" property="professional"> </columnOverride>
-            <columnOverride column="班级" property="team"> </columnOverride>
-            <columnOverride column="在读情况" property="status"> </columnOverride>
-            <columnOverride column="校区" property="campus"> </columnOverride>
-            <columnOverride column="身份证号码" property="identityId"> </columnOverride>
-            <columnOverride column="培养层次" property="educationLevel"></columnOverride>
-            <columnOverride column="民族" property="nation"></columnOverride>
-        </table>
+        <!--<table tableName="xslist" domainObjectName="StudentInfo" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">-->
+            <!--<columnOverride column="ID" property="id"> </columnOverride>-->
+            <!--<columnOverride column="学号" property="studentNumber"></columnOverride>-->
+            <!--<columnOverride column="姓名" property="name"></columnOverride>-->
+            <!--<columnOverride column="性别" property="sex"></columnOverride>-->
+            <!--<columnOverride column="学院" property="institute"> </columnOverride>-->
+            <!--<columnOverride column="年级" property="grade"> </columnOverride>-->
+            <!--<columnOverride column="专业" property="professional"> </columnOverride>-->
+            <!--<columnOverride column="班级" property="team"> </columnOverride>-->
+            <!--<columnOverride column="在读情况" property="status"> </columnOverride>-->
+            <!--<columnOverride column="校区" property="campus"> </columnOverride>-->
+            <!--<columnOverride column="身份证号码" property="identityId"> </columnOverride>-->
+            <!--<columnOverride column="培养层次" property="educationLevel"></columnOverride>-->
+            <!--<columnOverride column="民族" property="nation"></columnOverride>-->
+        <!--</table>-->
+        <table tableName="ArticleInfo" domainObjectName="Article" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="ArticleCategory" domainObjectName="ArticleCategory" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>
 </generatorConfiguration>

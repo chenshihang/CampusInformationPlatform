@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.wing.dao.ArticleCategoryDao">
+  <resultMap id="BaseResultMap" type="org.wing.entity.ArticleCategory">
+    <constructor>
+      <idArg column="Category" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="String" javaType="java.lang.String" jdbcType="NVARCHAR" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List">
+    Category, String
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ArticleCategory
+    where Category = #{category,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ArticleCategory
+    where Category = #{category,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="org.wing.entity.ArticleCategory">
+    insert into ArticleCategory (Category, String)
+    values (#{category,jdbcType=INTEGER}, #{string,jdbcType=NVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.wing.entity.ArticleCategory">
+    insert into ArticleCategory
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="category != null">
+        Category,
+      </if>
+      <if test="string != null">
+        String,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="category != null">
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="string != null">
+        #{string,jdbcType=NVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.wing.entity.ArticleCategory">
+    update ArticleCategory
+    <set>
+      <if test="string != null">
+        String = #{string,jdbcType=NVARCHAR},
+      </if>
+    </set>
+    where Category = #{category,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.wing.entity.ArticleCategory">
+    update ArticleCategory
+    set String = #{string,jdbcType=NVARCHAR}
+    where Category = #{category,jdbcType=INTEGER}
+  </update>
+
+
+</mapper>

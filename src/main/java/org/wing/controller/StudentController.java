@@ -4,8 +4,10 @@ package org.wing.controller;
  * Created by HarvestWu on 2017/12/15.
  */
 
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 
+import org.json.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import org.wing.viewobject.Articlevo;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.Result;
 import java.util.*;
 /**
  * 学生控制层
@@ -48,10 +51,10 @@ public class StudentController {
      */
     @RequestMapping(value = "/login")
     @ResponseBody
-    public ResultMap login(HttpServletRequest request,Student student){
+    public ResultMap login(HttpServletRequest request,@RequestParam("studentNumber")String studentNumber,@RequestParam("password")String password ){
 
-        String studentNumber = student.getStudentNumber();
-        String password = student.getPassword();
+//        String studentNumber = student.getStudentNumber();
+//        String password = student.getPassword();
         System.out.println("studentNumber="+studentNumber+",password="+password);
         if(studentService.studentIsExistInTable1(studentNumber)){
             String passwordMd5 = CryptographyUtil.md5(password);
@@ -102,6 +105,55 @@ public class StudentController {
 //            return ResultMap.createByErrorMessage("登录失败");
 //        }
     }
+
+    /**
+     * 修改密码的功能
+     * @param request
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
+    @RequestMapping("/resetPassword")
+    @ResponseBody
+    public ResultMap resetPassword(HttpServletRequest request,@RequestParam(value = "oldPassword") String oldPassword,@RequestParam(value = "newPassword") String newPassword){
+        StudentInfo currentStu = studentService.getCurrentStudent(request);
+        if(currentStu == null){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
+        }
+        if(StringUtils.isBlank(oldPassword) || StringUtils.isBlank(newPassword)){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"参数不能为空");
+        }
+        if(oldPassword.equals(newPassword)){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"新密码不能与原密码相同");
+        }
+        if(studentService.studentIsExistInTable1(currentStu.getStudentNumber())){
+            Student student = studentService.getStudentByStudentNumber(currentStu.getStudentNumber());
+            if(! student.getPassword().equals(CryptographyUtil.md5(oldPassword))){
+                return ResultMap.createByErrorMessage("原密码错误");
+            }else {
+                student.setPassword(CryptographyUtil.md5(newPassword));
+                boolean result = studentService.updatePassword(CryptographyUtil.md5(newPassword),currentStu.getStudentNumber());
+                if(!result){
+                    return ResultMap.createByErrorMessage("修改密码错误");
+                }
+            }
+        }else {
+            if(! CommonUtil.identityIdToPassword(currentStu.getIdentityId()).equals(oldPassword)){
+                return ResultMap.createByErrorMessage("原密码错误");
+            }else {
+
+                Student student = new Student();
+                student.setPassword(CryptographyUtil.md5(newPassword));
+                student.setStudentNumber(currentStu.getStudentNumber());
+                student.setIdCard(currentStu.getIdentityId());
+                studentService.insertStudent(student);
+            }
+        }
+        return ResultMap.createBySuccessMessage("修改密码成功");
+    }
+
+
+
     /**
      * 学生注册认证信息
      * @return
@@ -276,6 +328,32 @@ public class StudentController {
 
             return ResultMap.createBySuccess(articlevo);
         }
+    }
+
+    /**
+     * 根据分类，分页信息获取公告
+     * @param request
+     * @param pageNum
+     * @param pagesize
+     * @param categoryId
+     * @return
+     */
+    @RequestMapping(value = "/getArticlePages")
+    @ResponseBody
+    public ResultMap<PageInfo<Articlevo>> getArticlePages(HttpServletRequest request,
+                                               @RequestParam(value = "pageNum",defaultValue = "1")int pageNum,
+                                               @RequestParam(value = "pageSize",defaultValue = "10")int pagesize,
+                                               @RequestParam(value = "categoryId",defaultValue = "0") int categoryId){
+        StudentInfo currentStu = this.studentService.getCurrentStudent(request);
+        if(currentStu == null){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"请登陆");
+        }
+
+        System.out.println("pageNum= "+pageNum+" pagesize="+pagesize);
+        if(categoryId==0){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"categoryId不能为空");
+        }
+        return studentService.getArticlesByCategoryId(categoryId,pageNum,pagesize);
     }
 
     /**

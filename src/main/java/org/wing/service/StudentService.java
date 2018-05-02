@@ -4,7 +4,10 @@ package org.wing.service;
  * Created by HarvestWu on 2017/12/15.
  */
 
+import com.github.pagehelper.PageInfo;
+import org.wing.common.ResultMap;
 import org.wing.entity.*;
+import org.wing.viewobject.Articlevo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -121,4 +124,16 @@ public interface StudentService {
      * @return
      */
     StudentInfo getStudentInfo(String studentNumber);
+
+    boolean updatePassword(String password,String studentNumber);
+
+
+    /**
+     * 根据categoryId以及分页参数查询文章信息
+     * @param categoryId
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    ResultMap<PageInfo<Articlevo>> getArticlesByCategoryId(int categoryId, int pageNum, int pageSize);
 }

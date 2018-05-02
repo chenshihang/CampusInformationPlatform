@@ -4,6 +4,7 @@ package org.wing.dao;
  * Created by HarvestWu on 2017/12/15.
  */
 
+import org.apache.ibatis.annotations.Param;
 import org.wing.entity.ComputerGradeTwo;
 import org.wing.entity.Student;
 
@@ -44,5 +45,7 @@ public interface StudentDao {
      * @return
      */
     int studentIsExistInTable1(String studentNumber);
+
+    int updatePassword(@Param("password") String password, @Param("studentNumber") String studentNumber);
 
 }

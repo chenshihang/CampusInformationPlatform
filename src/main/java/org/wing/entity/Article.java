@@ -15,16 +15,17 @@ public class Article {
 
     private String college;
 
-    private String category;
+    private Integer category;
 
     private String contents;
 
 
-    public Article(){
 
+    public Article() {
+        super();
     }
 
-    public Article(Integer articleid, String user, String title, Date publishdate, String schoolyear, String college, String category) {
+    public Article(Integer articleid, String user, String title, Date publishdate, String schoolyear, String college, Integer category) {
         this.articleid = articleid;
         this.user = user;
         this.title = title;
@@ -34,7 +35,7 @@ public class Article {
         this.category = category;
     }
 
-    public Article(Integer articleid, String user, String title, Date publishdate, String schoolyear, String college, String category, String contents) {
+    public Article(Integer articleid, String user, String title, Date publishdate, String schoolyear, String college, Integer category, String contents) {
         this.articleid = articleid;
         this.user = user;
         this.title = title;
@@ -93,11 +94,11 @@ public class Article {
         this.college = college;
     }
 
-    public String getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Integer category) {
         this.category = category;
     }
 

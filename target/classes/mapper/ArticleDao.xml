@@ -9,7 +9,7 @@
       <arg column="PublishDate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
       <arg column="SchoolYear" javaType="java.lang.String" jdbcType="NVARCHAR" />
       <arg column="College" javaType="java.lang.String" jdbcType="NVARCHAR" />
-      <arg column="Category" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="Category" javaType="java.lang.Integer" jdbcType="INTEGER" />
     </constructor>
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="org.wing.entity.Article">
@@ -20,12 +20,12 @@
       <arg column="PublishDate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
       <arg column="SchoolYear" javaType="java.lang.String" jdbcType="NVARCHAR" />
       <arg column="College" javaType="java.lang.String" jdbcType="NVARCHAR" />
-      <arg column="Category" javaType="java.lang.String" jdbcType="NVARCHAR" />
+      <arg column="Category" javaType="java.lang.Integer" jdbcType="INTEGER" />
       <arg column="Contents" javaType="java.lang.String" jdbcType="VARCHAR" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List">
-    ArticleId, [User], Title, PublishDate, SchoolYear, College, Category
+    ArticleId, User, Title, PublishDate, SchoolYear, College, Category
   </sql>
   <sql id="Blob_Column_List">
     Contents
@@ -43,12 +43,12 @@
     where ArticleId = #{articleid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="org.wing.entity.Article">
-    insert into ArticleInfo (ArticleId, [User], Title,
+    insert into ArticleInfo (ArticleId, User, Title, 
       PublishDate, SchoolYear, College, 
       Category, Contents)
     values (#{articleid,jdbcType=INTEGER}, #{user,jdbcType=VARCHAR}, #{title,jdbcType=NVARCHAR}, 
       #{publishdate,jdbcType=TIMESTAMP}, #{schoolyear,jdbcType=NVARCHAR}, #{college,jdbcType=NVARCHAR},
-      #{category,jdbcType=NVARCHAR}, #{contents,jdbcType=VARCHAR})
+      #{category,jdbcType=INTEGER}, #{contents,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="org.wing.entity.Article">
     insert into ArticleInfo
@@ -57,7 +57,7 @@
         ArticleId,
       </if>
       <if test="user != null">
-        [User],
+        User,
       </if>
       <if test="title != null">
         Title,
@@ -98,7 +98,7 @@
         #{college,jdbcType=NVARCHAR},
       </if>
       <if test="category != null">
-        #{category,jdbcType=NVARCHAR},
+        #{category,jdbcType=INTEGER},
       </if>
       <if test="contents != null">
         #{contents,jdbcType=VARCHAR},
@@ -109,7 +109,7 @@
     update ArticleInfo
     <set>
       <if test="user != null">
-        [User] = #{user,jdbcType=VARCHAR},
+        User = #{user,jdbcType=VARCHAR},
       </if>
       <if test="title != null">
         Title = #{title,jdbcType=NVARCHAR},
@@ -124,7 +124,7 @@
         College = #{college,jdbcType=NVARCHAR},
       </if>
       <if test="category != null">
-        Category = #{category,jdbcType=NVARCHAR},
+        Category = #{category,jdbcType=INTEGER},
       </if>
       <if test="contents != null">
         Contents = #{contents,jdbcType=VARCHAR},
@@ -134,23 +134,23 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.wing.entity.Article">
     update ArticleInfo
-    set [User] = #{user,jdbcType=VARCHAR},
+    set User = #{user,jdbcType=VARCHAR},
       Title = #{title,jdbcType=NVARCHAR},
       PublishDate = #{publishdate,jdbcType=TIMESTAMP},
       SchoolYear = #{schoolyear,jdbcType=NVARCHAR},
       College = #{college,jdbcType=NVARCHAR},
-      Category = #{category,jdbcType=NVARCHAR},
+      Category = #{category,jdbcType=INTEGER},
       Contents = #{contents,jdbcType=VARCHAR}
     where ArticleId = #{articleid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="org.wing.entity.Article">
     update ArticleInfo
-    set [User] = #{user,jdbcType=VARCHAR},
+    set User = #{user,jdbcType=VARCHAR},
       Title = #{title,jdbcType=NVARCHAR},
       PublishDate = #{publishdate,jdbcType=TIMESTAMP},
       SchoolYear = #{schoolyear,jdbcType=NVARCHAR},
       College = #{college,jdbcType=NVARCHAR},
-      Category = #{category,jdbcType=NVARCHAR}
+      Category = #{category,jdbcType=INTEGER}
     where ArticleId = #{articleid,jdbcType=INTEGER}
   </update>
 
@@ -160,5 +160,11 @@
     ArticleId, [User], Title, PublishDate, SchoolYear, College, Category
 
     from ArticleInfo order by PublishDate DESC
+  </select>
+
+  <select id="getArticleList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    ArticleId, [User], Title, PublishDate, SchoolYear, College, Category
+    from ArticleInfo where Category=#{categoryId}  order by PublishDate DESC
   </select>
 </mapper>

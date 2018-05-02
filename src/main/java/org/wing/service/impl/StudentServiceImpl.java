@@ -5,13 +5,20 @@ package org.wing.service.impl;
  */
 
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wing.common.Common;
+import org.wing.common.ResponseCode;
+import org.wing.common.ResultMap;
 import org.wing.dao.*;
 import org.wing.entity.*;
 import org.wing.service.StudentService;
+import org.wing.utils.CommonUtil;
+import org.wing.viewobject.Articlevo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -42,6 +49,8 @@ public class StudentServiceImpl implements StudentService{
     private ComputerGradeTwoDao computerGradeTwoDao;
     @Autowired
     private ArticleDao articleDao;
+    @Autowired
+    private ArticleCategoryDao articleCategoryDao;
     /**
      * 根据学号和身份证号验证学生是否存在
      * @param studentNumber
@@ -179,5 +188,34 @@ public class StudentServiceImpl implements StudentService{
     public StudentInfo getStudentInfo(String studentNumber) {
         return studentInfoDao.getStudentInfo(studentNumber);
     }
+
+    public boolean updatePassword(String password,String studentNumber){
+
+        int count = studentDao.updatePassword(password,studentNumber);
+        if(count>0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+
+    public ResultMap<PageInfo<Articlevo>> getArticlesByCategoryId(int categoryId,int pageNum,int pageSize){
+        ArticleCategory category = articleCategoryDao.selectByPrimaryKey(categoryId);
+        if(category==null){
+            return ResultMap.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),"文章分类参数错误");
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Article> articles = articleDao.getArticleList(categoryId);
+        List<Articlevo> articleVos= new ArrayList<>();
+        for(Article item:articles){
+            articleVos.add(CommonUtil.articleToVo(item));
+        }
+        PageInfo<Articlevo> pageInfo = new PageInfo(articles);
+        pageInfo.setList(articleVos);
+        return ResultMap.createBySuccess(pageInfo);
+
+    }
+
 
 }

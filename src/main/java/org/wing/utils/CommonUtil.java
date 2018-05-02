@@ -1,6 +1,7 @@
 package org.wing.utils;
 
 import org.wing.entity.Article;
+import org.wing.entity.ArticleCategory;
 import org.wing.viewobject.Articlevo;
 
 /**
@@ -16,7 +17,7 @@ public class CommonUtil {
     public static Articlevo articleToVo(Article article){
         Articlevo articlevo = new Articlevo();
         articlevo.setArticleid(article.getArticleid());
-        articlevo.setCategory(article.getCategory());
+        articlevo.setCategory(article.getCategory().toString());
         articlevo.setCollege(article.getCollege());
         articlevo.setContents(article.getContents());
         articlevo.setPublishdate(DateTimeUtil.DateToStr(article.getPublishdate()));

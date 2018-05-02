@@ -282,6 +282,23 @@
       <artifactId>jetty-util</artifactId>
       <version>6.1.25</version>
     </dependency>
+
+    <!-- mybatis pager-->
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>4.1.0</version>
+    </dependency>
+
+
+
+    <!-- jsqlparser 解析sql语句 -->
+    <dependency>
+      <groupId>com.github.jsqlparser</groupId>
+      <artifactId>jsqlparser</artifactId>
+      <version>0.9.4</version>
+    </dependency>
+
     <!--添加java对象注解转json支持-->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -343,6 +360,7 @@
                 <target>1.7</target>
             </configuration>
         </plugin>
+
     </plugins>
   </build>
 </project>

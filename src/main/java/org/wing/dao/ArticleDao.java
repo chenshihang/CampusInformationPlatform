@@ -20,4 +20,6 @@ public interface ArticleDao {
     int updateByPrimaryKey(Article record);
 
     List<Article> getRecentArticles();
+
+    List<Article> getArticleList(int categoryId);
 }
