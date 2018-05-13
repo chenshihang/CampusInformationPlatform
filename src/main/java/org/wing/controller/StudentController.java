@@ -23,6 +23,7 @@ import org.wing.viewobject.Articlevo;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.xml.transform.Result;
 import java.util.*;
 /**
@@ -51,7 +52,7 @@ public class StudentController {
      */
     @RequestMapping(value = "/login")
     @ResponseBody
-    public ResultMap login(HttpServletRequest request,@RequestParam("studentNumber")String studentNumber,@RequestParam("password")String password ){
+    public ResultMap<StudentInfo> login(HttpServletRequest request,@RequestParam("studentNumber")String studentNumber,@RequestParam("password")String password ){
 
 //        String studentNumber = student.getStudentNumber();
 //        String password = student.getPassword();
@@ -80,9 +81,11 @@ public class StudentController {
         }
 
         StudentInfo studentInfo = studentService.getStudentInfo(studentNumber);
+        studentInfo.setIdentityId(null);
         request.getSession().setAttribute(Common.SESSION_STUDENT_NUM,studentNumber);
         request.getSession().setAttribute(Common.CURRENT_STUDENT,studentInfo);
-        return ResultMap.createBySuccessMessage("登录成功");
+        return ResultMap.createBySuccess("登录成功",studentInfo);
+//        return ResultMap.createBySuccessMessage("登录成功");
 //        student.setStudentNumber("20158531");
 //        student.setPassword("123456");
 //        Subject subject = SecurityUtils.getSubject();
@@ -104,6 +107,24 @@ public class StudentController {
 //        }catch (Exception e){
 //            return ResultMap.createByErrorMessage("登录失败");
 //        }
+    }
+
+    /**
+     * 退出登录
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/logout")
+    @ResponseBody
+    public ResultMap logout(HttpServletRequest request){
+        StudentInfo currentStu = studentService.getCurrentStudent(request);
+        if(currentStu == null){
+            return ResultMap.createBySuccessMessage("当前没有用户登录");
+        }else {
+            HttpSession session = request.getSession();
+            session.removeAttribute(Common.CURRENT_STUDENT);
+            return ResultMap.createBySuccessMessage("退出登录成功");
+        }
     }
 
     /**
@@ -177,12 +198,13 @@ public class StudentController {
     @ResponseBody
     public ResultMap<List<Examination>> examSchedule(HttpServletRequest request){
 
+
+        System.out.println("进入examSchedule方法--------------------");
         StudentInfo currentStu = studentService.getCurrentStudent(request);
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
 
-//        Map<String, Object> resultMap = new LinkedHashMap<>();
         List<Examination> examination=studentService.getExamByStudentNumber(currentStu.getStudentNumber());
         if (examination!=null) {
             for (int i = 0; i < examination.size(); i++) {
@@ -217,7 +239,6 @@ public class StudentController {
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
-
 
         Map<String, Object> resultMap = new LinkedHashMap<>();
         List<ClassQuery>classQueries=new ArrayList<>();
@@ -259,6 +280,9 @@ public class StudentController {
         if(currentStu == null){
             return ResultMap.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),"未登录，请登陆");
         }
+
+
+
         Map<String, Object> resultMap =new LinkedHashMap<>();
         List<ComputerGradeTwo> computerGradeTwos=null;
         if (StringUtils.isNotBlank(currentStu.getStudentNumber())){
