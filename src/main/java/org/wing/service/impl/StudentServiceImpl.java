@@ -1,14 +1,8 @@
 package org.wing.service.impl;
 
-/**
- * Created by HarvestWu on 2017/12/15.
- */
 
-
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wing.common.Common;
@@ -146,20 +140,14 @@ public class StudentServiceImpl implements StudentService{
 
     public StudentInfo getCurrentStudent(HttpServletRequest request){
         HttpSession session = request.getSession();
-//        String stuNumber = (String) session.getAttribute(Common.SESSION_STUDENT_NUM);
         StudentInfo studentInfo = (StudentInfo)session.getAttribute(Common.CURRENT_STUDENT);
-
-//        System.out.println("getcurrentStudent 获得stuNumber="+stuNumber);
-//        Student student = this.getStudentByStudentNumber(stuNumber);
         return studentInfo;
     }
 
     public List<String> getTermsByStuNum(String studentNumber){
         List<Achievement>  achievements = achievementDao.getTermNumber(studentNumber);
-        System.out.println("查询到学生学期信息，共有"+achievements.size()+"ge xue qi");
         List<String> result = new ArrayList<>();
         for(Achievement achievement: achievements){
-            System.out.println(achievement.getTerm());
             result.add(achievement.getTerm());
         }
         return result;
@@ -167,16 +155,16 @@ public class StudentServiceImpl implements StudentService{
 
     public List<Achievement> getGrades(String studentNumber,String term){
 
-        System.out.println("service 查看学号为"+studentNumber+" term="+term);
         List<Achievement> result = achievementDao.getAchievement(studentNumber,term);
-        for(Achievement achievement: result){
-            System.out.println(achievement.getCredit());
-        }
         return result;
     }
 
+    /**
+     * 判断该学号的是否存在于学生认证信息表中
+     * @param studentNumber
+     * @return
+     */
     public boolean studentIsExistInTable1(String studentNumber){
-
         int count =  studentDao.studentIsExistInTable1(studentNumber);
         if(count==0){
             return false;
@@ -214,7 +202,6 @@ public class StudentServiceImpl implements StudentService{
         PageInfo<Articlevo> pageInfo = new PageInfo(articles);
         pageInfo.setList(articleVos);
         return ResultMap.createBySuccess(pageInfo);
-
     }
 
 

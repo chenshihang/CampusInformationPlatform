@@ -1,9 +1,5 @@
 package org.wing.service;
 
-/**
- * Created by HarvestWu on 2017/12/15.
- */
-
 import com.github.pagehelper.PageInfo;
 import org.wing.common.ResultMap;
 import org.wing.entity.*;
@@ -112,7 +108,7 @@ public interface StudentService {
     List<Achievement> getGrades(String studentNumber,String term);
 
     /**
-     * 根据学号判断学生是否存在
+     * 根据学号判断学生是否存在于学生认证表中
      * @param studentNumber
      * @return
      */
